@@ -17,7 +17,12 @@ public class RR implements Algorithm {
 
     @Override
     public Task pickNextTask() {
-        // Task-selection logic will go here
-        return null;
+        // Selects the next task for the scheduler
+
+        if (queue.isEmpty()) {
+            return null;
+        }
+
+        return queue.get(currentIndex);
     }
 }
