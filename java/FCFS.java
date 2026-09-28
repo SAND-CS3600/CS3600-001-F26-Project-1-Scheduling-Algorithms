@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class FCFS implements Algorithm {
+public class FCFS implements Algorithm { 
 
     //list of rtasks waiting to be scheduled 
     private List<Task> queue;
