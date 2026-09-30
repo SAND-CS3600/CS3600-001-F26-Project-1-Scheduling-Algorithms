@@ -78,6 +78,11 @@ public class Priority implements Algorithm {
             if (t.getPriority() > highest.getPriority()) {
                 highest = t;
             }
+	    else if(t.getPriority() == highest.getPriority()){
+		if(t.getBurst() <= highest.getBurst()){
+			highest = t;
+		}
+	    }
         }
         return highest;
     }
