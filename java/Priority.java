@@ -75,7 +75,7 @@ public class Priority implements Algorithm {
 
         Task highest = queue.get(0);
         for (Task t : queue) {
-            if (t.getPriority() < highest.getPriority()) {
+            if (t.getPriority() > highest.getPriority()) {
                 highest = t;
             }
         }
