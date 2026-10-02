@@ -64,6 +64,22 @@ public class PriorityRR implements Algorithm {
             return null;
         }
 
-        return queue.get(currentIndex);
+        int highest = 0;
+        
+        for (Task t : queue) {
+            if (t.getPriority() > highest) {
+                highest = t.getPriority();
+            }
+        }
+
+        for (int i = 0; i < queue.size(); i++) {
+            int index = (currentIndex + i) % queue.size();
+            Task t = queue.get(index);
+            if (t.getPriority() == highest) {
+                return t;
+            }
+        }
+        
+        return null;
     }
 }
