@@ -37,6 +37,70 @@ public class PriorityRR implements Algorithm {
         int totalResponseTimes = 0;
         int totalTurnaroundTimes = 0;
         int totalWaitingTimes = 0;
+        boolean hasSamePriority = false;
+        int taskIndex;
+
+        while (task != null) {
+
+            taskIndex = queue.indexOf(task);
+        
+            for (Task t : queue) {
+                if (t != task && t.getPriority() == task.getPriority()) {
+                    hasSamePriority = true;
+                    break;
+                }    
+            }
+
+            // Get the task's remaining burst time
+            runtime = task.getBurst();
+
+            // Response time is the first time the task receives the CPU
+            if (responseTime.get(task.getTid()) == null) {
+                responseTime.set(task.getTid(), currentTime);
+            }
+
+            if (hasSamePriority == true) {
+
+                // Run for one quantum, or the remaining burst if it is less than 10 ms
+                if (runtime > 10) {
+                    CPU.run(task, 10);
+                    currentTime += 10;
+                    runtime -= 10;
+                    task.setBurst(runtime);
+                }
+                else {
+                    CPU.run(task, runtime);
+                    currentTime += runtime;
+                    runtime = 0;
+                    task.setBurst(runtime);
+                }
+            }
+            else {
+                CPU.run(task, runtime);
+	            currentTime += runtime;
+                runtime = 0;
+                task.setBurst(runtime);
+            }
+
+            if (runtime == 0) {
+                // A completed task's current time is its turnaround time
+                turnaroundTime.set(task.getTid(), currentTime);
+                queue.remove(task);
+                currentIndex = taskIndex;
+            }
+            else {
+                // Move to the next task if the current task is not finished
+                currentIndex = taskIndex + 1;
+            }
+
+            // Wrap back to the beginning if currentIndex is past the end
+            if (!queue.isEmpty() && currentIndex >= queue.size()) {
+                currentIndex = 0;
+            }
+
+            task = pickNextTask();
+            hasSamePriority = false;
+        }
 
         // Calculate totals after every task has completed
         for (int i = 0; i < responseTime.size(); i++) {

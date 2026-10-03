@@ -34,9 +34,9 @@ public class Priority implements Algorithm {
 	while(task != null){
 	    runtime = task.getBurst();
 	    // Response time is the first time the task receives the CPU
-            if (responseTime.get(task.getTid()) == null) {
+        if (responseTime.get(task.getTid()) == null) {
                 responseTime.set(task.getTid(), currentTime);
-            }
+        }
 	    CPU.run(task, runtime);
 	    currentTime += runtime;
 
@@ -73,7 +73,7 @@ public class Priority implements Algorithm {
         }
 
         Task highest = queue.get(0);
-        
+
         for (Task t : queue) {
             if (t.getPriority() > highest.getPriority()) {
                 highest = t;
