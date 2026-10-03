@@ -2,10 +2,10 @@ import java.util.*;
 
 public class FCFS implements Algorithm { 
 
-    //list of rtasks waiting to be scheduled 
+    //list of tasks waiting to be scheduled 
     private List<Task> queue;
 
-    //Store scheduling data for clculating performance metrics 
+    //Store scheduling data for calculating performance metrics 
     private List<Integer> originalBurstTime = new ArrayList<>();
     private List<Integer> responseTime = new ArrayList<>();
     private List<Integer> turnaroundTime = new ArrayList<>();
@@ -14,7 +14,7 @@ public class FCFS implements Algorithm {
         this.queue = queue;
 
         //Save each tasks original burst before scheduling modifies it
-        //Response and turnaroudn times are null until they are recorded
+        //Response and turnaround times are null until they are recorded
         for (int i = 0; i < queue.size(); i++) {
             originalBurstTime.add(queue.get(i).getBurst());
             responseTime.add(null);
@@ -25,7 +25,7 @@ public class FCFS implements Algorithm {
     
     @Override
     public void schedule() {
-        //Execute tasts in the order they arrived
+        //Execute tasks in the order they arrived
 
         Task task = pickNextTask();
         int runtime;
@@ -42,7 +42,7 @@ public class FCFS implements Algorithm {
             //Get the tasks burst time
             runtime = task.getBurst();
 
-            //response time is the first time the task recieves the CPU
+            //response time is the first time the task receives the CPU
             responseTime.set(task.getTid(), currentTime);
 
             //FCFS runs the task for its entire burst
@@ -73,7 +73,7 @@ public class FCFS implements Algorithm {
         averageResponseTime = (float) totalResponseTimes / responseTime.size();
 
         System.out.println("the average turnaround time is " + averageTurnaroundTime);
-        System.out.println("the average waitng time is " + averageWaitingTime);
+        System.out.println("the average waiting time is " + averageWaitingTime);
         System.out.println("the average response time is " + averageResponseTime);
     }
 
