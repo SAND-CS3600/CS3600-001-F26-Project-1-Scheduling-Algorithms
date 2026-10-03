@@ -5,6 +5,7 @@ public class PriorityRR implements Algorithm {
     // List of tasks waiting to be scheduled
     private List<Task> queue;
 
+    // Index where the circular search begins for the next eligible task
     private int currentIndex;
 
     // Store scheduling data for calculating performance metrics
@@ -41,9 +42,12 @@ public class PriorityRR implements Algorithm {
         int taskIndex;
 
         while (task != null) {
-
+            // Save the selected task's actual queue index.
+            // currentIndex may differ because pickNextTask() searches circularly.
             taskIndex = queue.indexOf(task);
         
+            // Check whether another remaining task shares this priority.
+            // If so, tasks at this priority must use Round Robin.
             for (Task t : queue) {
                 if (t != task && t.getPriority() == task.getPriority()) {
                     hasSamePriority = true;
@@ -69,6 +73,7 @@ public class PriorityRR implements Algorithm {
                     task.setBurst(runtime);
                 }
                 else {
+                    // No other task shares this priority, so run the task to completion
                     CPU.run(task, runtime);
                     currentTime += runtime;
                     runtime = 0;
@@ -86,10 +91,12 @@ public class PriorityRR implements Algorithm {
                 // A completed task's current time is its turnaround time
                 turnaroundTime.set(task.getTid(), currentTime);
                 queue.remove(task);
+
+                // After removal, the next task shifts into the completed task's old index     
                 currentIndex = taskIndex;
             }
             else {
-                // Move to the next task if the current task is not finished
+                // The task remains in the queue, so begin the next search after it
                 currentIndex = taskIndex + 1;
             }
 
@@ -98,6 +105,7 @@ public class PriorityRR implements Algorithm {
                 currentIndex = 0;
             }
 
+            // Select the next task using priority and the current Round Robin position
             task = pickNextTask();
             hasSamePriority = false;
         }
@@ -128,6 +136,7 @@ public class PriorityRR implements Algorithm {
             return null;
         }
 
+        // Find the highest priority currently remaining in the queue
         int highest = 0;
         
         for (Task t : queue) {
@@ -136,6 +145,8 @@ public class PriorityRR implements Algorithm {
             }
         }
 
+        // Search circularly from currentIndex for the next task
+        // belonging to the highest-priority group
         for (int i = 0; i < queue.size(); i++) {
             int index = (currentIndex + i) % queue.size();
             Task t = queue.get(index);
